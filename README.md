@@ -1,1 +1,1 @@
-# ropasc
+A small game based on Python 3.11.7 programmed for fun.
