@@ -20,20 +20,23 @@ class Player:
         self.dirs = [(0, 0), (0, 0), (0, 0)]
 
         # hunting
-        neighbors = game.in_range(self, game.hunt_range, self.faction - 1 if self.faction > 0 else game.factions - 1)
+        neighbors = game.in_range(self, game.hunt_range, [x for x in range(len(game.conquer_table[self.faction]))
+                                                          if game.conquer_table[self.faction][x] == 1])
         if neighbors:
             hunt_targets = [(n.id, game.distances[self.id][n.id][2]) for n in neighbors]
             hunt_id = min(hunt_targets, key=lambda x: x[1])[0]
             self.dirs[0] = tuple(self.hunt_weight * x for x in game.distances[self.id][hunt_id][:2])
 
         # avoiding
-        neighbors = game.in_range(self, game.avoid_range, self.faction)
+        neighbors = game.in_range(self, game.avoid_range, [x for x in range(len(game.conquer_table[self.faction]))
+                                                           if game.conquer_table[self.faction][x] == 0])
         for n in neighbors:
             self.dirs[1] = tuple(self.avoid_weight * x + self.dirs[1][i]
                                  for i, x in enumerate(game.distances[self.id][n.id][:2]))
 
         # escaping
-        neighbors = game.in_range(self, game.escape_range, self.faction + 1 if self.faction < game.factions - 1 else 0)
+        neighbors = game.in_range(self, game.escape_range, [x for x in range(len(game.conquer_table[self.faction]))
+                                                            if game.conquer_table[x][self.faction] == 1])
         for n in neighbors:
             self.dirs[2] = tuple(self.escape_weight * x + self.dirs[1][i]
                                  for i, x in enumerate(game.distances[self.id][n.id][:2]))
@@ -56,6 +59,9 @@ class Player:
         self.pos = new_x, new_y
 
     def conquer(self, game):
-        neighbors = game.in_range(self, game.conquer_range, self.faction - 1 if self.faction > 0 else game.factions - 1)
+        neighbors = game.in_range(self, game.conquer_range, [x for x in range(len(game.conquer_table[self.faction]))
+                                                             if game.conquer_table[self.faction][x] == 1])
+        if game.highlight_player and self.id == game.highlight_id and neighbors:
+            print(neighbors)
         for n in neighbors:
             n.faction = self.faction

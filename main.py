@@ -22,7 +22,7 @@ if __name__ == "__main__":
     game = Game(config, FIELD)
     times = collections.deque(maxlen=10)
 
-    state = 2  # 0 stop, 1 pausing, 2 running, 3 one step
+    state = 2  # 0 exit, 1 pause, 2 run, 3 one step
     while state:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

@@ -9,13 +9,20 @@ def write_text(screen, font, location, text, color):
 def game_screen(game, screen, font, times):
     screen.fill((0, 0, 0))
     pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(0, 0, game.field[0], game.field[1]))
+    color = (0, 0, 0)
     for p in game.players:
-        if p.faction == 1:
+        if p.faction == 0:
             color = (255, 0, 0)
-        elif p.faction == 2:
+        elif p.faction == 1:
             color = (0, 255, 0)
-        else:
+        elif p.faction == 2:
             color = (0, 0, 255)
+        elif p.faction == 3:
+            color = (255, 255, 0)
+        elif p.faction == 4:
+            color = (0, 255, 255)
+        elif p.faction == 5:
+            color = (255, 0, 255)
         pygame.draw.rect(screen, color, pygame.Rect(p.pos[0], p.pos[1], 10, 10))
     if game.highlight_player:
         for p in game.players:
