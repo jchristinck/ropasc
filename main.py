@@ -40,7 +40,8 @@ if __name__ == "__main__":
                 elif keys[pygame.K_F5]:
                     game.reload_config = True
                 elif keys[pygame.K_r]:
-                    game.players = game.new_players()
+                    game.players = game.new_players(config)
+                    state = 2
                 elif keys[pygame.K_LEFT]:
                     game.highlight_id = game.highlight_id - 1 if game.highlight_id > 0 else len(game.players) - 1
                 elif keys[pygame.K_RIGHT]:
@@ -51,6 +52,8 @@ if __name__ == "__main__":
             start_time = timeit.default_timer()
             game.step(screen, font, times)
             screen_updates.game_screen(game, screen, font, times)
+            if game.winner:
+                state = 1
             simulation_time = timeit.default_timer() - start_time
             if simulation_time < min_frame_time:
                 time.sleep(min_frame_time - simulation_time)
