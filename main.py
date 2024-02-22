@@ -8,6 +8,7 @@ import collections
 
 
 if __name__ == "__main__":
+    # TODO: tournament mode
     WINDOW = (1400, 900)
     FIELD = (WINDOW[0] - 500, WINDOW[1])
 
@@ -39,6 +40,7 @@ if __name__ == "__main__":
                     state = 3
                 elif keys[pygame.K_F5]:
                     game.reload_config = True
+                    state = 2
                 elif keys[pygame.K_r]:
                     game.players = game.new_players(config)
                     state = 2
@@ -46,11 +48,15 @@ if __name__ == "__main__":
                     game.highlight_id = game.highlight_id - 1 if game.highlight_id > 0 else len(game.players) - 1
                 elif keys[pygame.K_RIGHT]:
                     game.highlight_id = game.highlight_id + 1 if game.highlight_id < len(game.players) else 0
+        if game.reload_config:
+            config.read('config.ini')
+            del game
+            game = Game(config, FIELD)
         if state == 1:
             screen_updates.game_screen(game, screen, font, times)
         if state >= 2:
             start_time = timeit.default_timer()
-            game.step(screen, font, times)
+            game.step()
             screen_updates.game_screen(game, screen, font, times)
             if game.winner:
                 state = 1
@@ -60,8 +66,4 @@ if __name__ == "__main__":
             times.append(timeit.default_timer() - start_time)
             if state == 3:
                 state = 1
-        if game.reload_config:
-            config.read('config.ini')
-            del game
-            game = Game(config, FIELD)
     pygame.quit()

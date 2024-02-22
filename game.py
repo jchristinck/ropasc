@@ -12,10 +12,16 @@ class Game:
         SPEED_PER_SP = 0.05
         BASE_HUNT_RANGE = 500
         HUNT_RANGE_PER_SP = 30
+        BASE_HUNT_WEIGHT = 0.1
+        HUNT_WEIGHT_PER_SP = 0.01
         BASE_AVOID_RANGE = 10
         AVOID_RANGE_PER_SP = 1.5
+        BASE_AVOID_WEIGHT = -0.1
+        AVOID_WEIGHT_PER_SP = -0.01
         BASE_ESCAPE_RANGE = 50
         ESCAPE_RANGE_PER_SP = 10
+        BASE_ESCAPE_WEIGHT = -0.3
+        ESCAPE_WEIGHT_PER_SP = -0.02
         BASE_CONQUER_RANGE = 7.5
         CONQUER_RANGE_PER_SP = 1.25
 
@@ -30,7 +36,8 @@ class Game:
             pass  # tournament mode tbd
         else:
             if config.get('rules', 'teams_equal') == 'True':
-                self.num_players_faction = [int(BASE_PLAYERS + PLAYERS_PER_SP * int(config.get('team_default', 'players')))
+                self.num_players_faction = [int(BASE_PLAYERS + PLAYERS_PER_SP *
+                                                int(config.get('team_default', 'players')))
                                             for _ in range(self.num_factions)]
                 self.faction_stats.extend([[BASE_SPEED + SPEED_PER_SP * float(config.get('team_default', 'speed')),
                                            BASE_HUNT_RANGE + HUNT_RANGE_PER_SP *
@@ -40,7 +47,13 @@ class Game:
                                            BASE_ESCAPE_RANGE + ESCAPE_RANGE_PER_SP *
                                             float(config.get('team_default', 'escape_range')),
                                            BASE_CONQUER_RANGE + CONQUER_RANGE_PER_SP *
-                                            float(config.get('team_default', 'conquer_range'))]
+                                            float(config.get('team_default', 'conquer_range')),
+                                            BASE_HUNT_WEIGHT + HUNT_WEIGHT_PER_SP *
+                                            float(config.get('team_default', 'hunt_weight')),
+                                            BASE_AVOID_WEIGHT + AVOID_WEIGHT_PER_SP *
+                                            float(config.get('team_default', 'hunt_weight')),
+                                            BASE_ESCAPE_WEIGHT + ESCAPE_WEIGHT_PER_SP *
+                                            float(config.get('team_default', 'hunt_weight'))]
                                            for _ in range(self.num_factions)])
             else:
                 self.num_players_faction = []
@@ -56,7 +69,13 @@ class Game:
                                                BASE_ESCAPE_RANGE + ESCAPE_RANGE_PER_SP *
                                                float(config.get('faction'+str(i + 1), 'escape_range')),
                                                BASE_CONQUER_RANGE + CONQUER_RANGE_PER_SP *
-                                               float(config.get('faction'+str(i + 1), 'conquer_range'))])
+                                               float(config.get('faction'+str(i + 1), 'conquer_range')),
+                                               BASE_HUNT_WEIGHT + HUNT_WEIGHT_PER_SP *
+                                               float(config.get('faction'+str(i + 1), 'hunt_weight')),
+                                               BASE_AVOID_WEIGHT + AVOID_WEIGHT_PER_SP *
+                                               float(config.get('faction'+str(i + 1), 'avoid_weight')),
+                                               BASE_ESCAPE_WEIGHT + ESCAPE_WEIGHT_PER_SP *
+                                               float(config.get('faction'+str(i + 1), 'escape_weight'))])
         self.players = self.new_players(config)
         self.distances = [[(0, 0, 0) for _ in range(len(self.players))] for _ in range(len(self.players))]
         self.conquer_table = [[0 for _ in range(self.num_factions)] for _ in range(self.num_factions)]
@@ -76,15 +95,14 @@ class Game:
         players = []
         for i in range(self.num_factions):
             for j in range(self.num_players_faction[i]):
-                players.append(player.Player(len(players), self.random_location(self.field), self.faction_stats[i][0],
+                players.append(player.Player(len(players), (random.randint(10, self.field[0] - 10),
+                                             random.randint(10, self.field[0] - 10)), self.faction_stats[i][0],
                                              self.faction_stats[i][1], self.faction_stats[i][2],
-                                             self.faction_stats[i][3], self.faction_stats[i][4], i))
+                                             self.faction_stats[i][3], self.faction_stats[i][4],
+                                             self.faction_stats[i][5], self.faction_stats[i][6],
+                                             self.faction_stats[i][7], i))
         self.winner = 0
         return players
-
-    @staticmethod
-    def random_location(field):
-        return random.randint(10, field[0] - 10), random.randint(10, field[0] - 10)
 
     def in_range(self, p, max_dist, factions):
         return [n for n in self.players if
@@ -107,7 +125,7 @@ class Game:
             if not players:
                 self.winner = [self.conquer_table[i][idf] for i in range(self.num_factions)]
 
-    def step(self, screen, font, times):
+    def step(self):
         random.shuffle(self.players)
         self.calc_distances()
         for p in self.players:

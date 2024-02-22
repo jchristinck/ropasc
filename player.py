@@ -1,19 +1,19 @@
 import numpy
-import pygame.examples.scaletest
 
 
 class Player:
 
-    def __init__(self, id, pos, speed, hunt_range, avoid_range, escape_range, conquer_range, faction):
+    def __init__(self, id, pos, speed, hunt_range, avoid_range, escape_range, conquer_range, hunt_weight, avoid_weight,
+                 escape_weight, faction):
         self.id = id
         self.pos = pos
         self.speed = speed
         self.hunt_range = hunt_range
-        self.hunt_weight = 0.2
+        self.hunt_weight = hunt_weight
         self.avoid_range = avoid_range
-        self.avoid_weight = -0.2
+        self.avoid_weight = avoid_weight
         self.escape_range = escape_range
-        self.escape_weight = -0.5
+        self.escape_weight = escape_weight
         self.conquer_range = conquer_range
         self.faction = faction
         self.dirs = [(0, 0), (0, 0), (0, 0)]
