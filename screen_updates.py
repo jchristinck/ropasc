@@ -6,9 +6,10 @@ def write_text(screen, font, location, text, color):
     pygame.display.flip()
 
 
-def game_screen(game, screen, font, times):
-    screen.fill((0, 0, 0))
+def game_screen(game, screen, font, times, figure):
     pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(0, 0, game.field[0], game.field[1]))
+    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(900, 0, 900, 250))
+    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(900, 650, 900, 250))
     color = (0, 0, 0)
     for p in game.players:
         if p.faction == 0:
@@ -38,22 +39,32 @@ def game_screen(game, screen, font, times):
                 pygame.draw.line(screen, (150, 0, 0), (x, y), (x + p.dirs[0][0], y + p.dirs[0][1]))
                 pygame.draw.line(screen, (0, 150, 0), (x, y), (x + p.dirs[1][0], y + p.dirs[1][1]))
                 pygame.draw.line(screen, (0, 0, 150), (x, y), (x + p.dirs[2][0], y + p.dirs[2][1]))
-    font.render_to(screen, (930, 150), "p      s      hr     av    er    cr", (255, 255, 255))
+    font.render_to(screen, (920, 50), "p      s      hr      ar      er       cr      hw      aw      ew",
+                   (255, 255, 255))
     for i in range(game.num_factions):
-        font.render_to(screen, (930, 200 + 50 * i), str(game.num_players_faction[i]), (255, 255, 255))
-        font.render_to(screen, (1010, 200 + 50 * i), str(int(game.faction_stats[i][0])), (255, 255, 255))
-        font.render_to(screen, (1090, 200 + 50 * i), str(int(game.faction_stats[i][1])), (255, 255, 255))
-        font.render_to(screen, (1170, 200 + 50 * i), str(int(game.faction_stats[i][2])), (255, 255, 255))
-        font.render_to(screen, (1250, 200 + 50 * i), str(int(game.faction_stats[i][3])), (255, 255, 255))
-        font.render_to(screen, (1330, 200 + 50 * i), str(int(game.faction_stats[i][4])), (255, 255, 255))
-    if game.winner:
-        font.render_to(screen, (930, 100), "winner is: " + str(game.winner.index(1) + 1), (255, 255, 255))
+        font.render_to(screen, (910, 100 + 50 * i), str(game.num_players_faction[i]), (255, 255, 255))
+        font.render_to(screen, (990, 100 + 50 * i), str(round(game.faction_stats[i][0], 1)), (255, 255, 255))
+        font.render_to(screen, (1070, 100 + 50 * i), str(game.faction_stats[i][1]), (255, 255, 255))
+        font.render_to(screen, (1150, 100 + 50 * i), str(round(game.faction_stats[i][2], 1)), (255, 255, 255))
+        font.render_to(screen, (1250, 100 + 50 * i), str(round(game.faction_stats[i][3], 1)), (255, 255, 255))
+        font.render_to(screen, (1340, 100 + 50 * i), str(round(game.faction_stats[i][4], 1)), (255, 255, 255))
+        font.render_to(screen, (1440, 100 + 50 * i), str(round(game.faction_stats[i][5], 2)), (255, 255, 255))
+        font.render_to(screen, (1545, 100 + 50 * i), str(round(game.faction_stats[i][6], 2)), (255, 255, 255))
+        font.render_to(screen, (1650, 100 + 50 * i), str(round(game.faction_stats[i][7], 2)), (255, 255, 255))
     frame_rate = round(len(times) / sum(times) if sum(times) > 0 else 0, 1)
-    font.render_to(screen, (1315, 5), str(frame_rate), (255, 255, 255))
+    font.render_to(screen, (1715, 5), str(frame_rate), (255, 255, 255))
     font.render_to(screen, (930, 685), "pause: space", (255, 255, 255))
     font.render_to(screen, (930, 715), "new start: r", (255, 255, 255))
     font.render_to(screen, (930, 750), "reload config: F5", (255, 255, 255))
     font.render_to(screen, (930, 785), "one step: n", (255, 255, 255))
     font.render_to(screen, (930, 820), "toggle highlight player: h", (255, 255, 255))
     font.render_to(screen, (930, 855), "switch player: left & right", (255, 255, 255))
+    if not len(game.num_players_faction_current) % 10:
+        figure.line('faction1', [i for i in range(len(game.num_players_faction_current))],
+                    [p[0] for p in game.num_players_faction_current])
+        figure.line('faction2', [i for i in range(len(game.num_players_faction_current))],
+                    [p[1] for p in game.num_players_faction_current])
+        figure.line('faction3', [i for i in range(len(game.num_players_faction_current))],
+                    [p[2] for p in game.num_players_faction_current])
+        figure.draw()
     pygame.display.flip()
