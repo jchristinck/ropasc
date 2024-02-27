@@ -142,6 +142,10 @@ class Game:
         for idf, players in enumerate(self.num_players_faction_current[-1]):
             if not players:
                 self.winner = [self.conquer_table[i][idf] for i in range(self.num_factions)]
+                self.num_players_faction_current[-1] = [0, 0, 0]
+                self.num_players_faction_current[-1][[self.conquer_table[i][idf]
+                                                      for i in range(self.num_factions)].index(1)] =\
+                    sum(self.num_players_faction)
 
     def step(self):
         random.shuffle(self.players)

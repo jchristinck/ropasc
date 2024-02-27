@@ -59,12 +59,12 @@ def game_screen(game, screen, font, times, figure):
     font.render_to(screen, (930, 785), "one step: n", (255, 255, 255))
     font.render_to(screen, (930, 820), "toggle highlight player: h", (255, 255, 255))
     font.render_to(screen, (930, 855), "switch player: left & right", (255, 255, 255))
-    if not len(game.num_players_faction_current) % 10:
+    if (not len(game.num_players_faction_current) % 10) or game.winner:
         figure.line('faction1', [i for i in range(len(game.num_players_faction_current))],
-                    [p[0] for p in game.num_players_faction_current])
+                    [p[0] for p in game.num_players_faction_current], color=(255, 0, 0))
         figure.line('faction2', [i for i in range(len(game.num_players_faction_current))],
-                    [p[1] for p in game.num_players_faction_current])
+                    [p[1] for p in game.num_players_faction_current], color=(0, 255, 0))
         figure.line('faction3', [i for i in range(len(game.num_players_faction_current))],
-                    [p[2] for p in game.num_players_faction_current])
+                    [p[2] for p in game.num_players_faction_current], color=(0, 0, 255))
         figure.draw()
     pygame.display.flip()

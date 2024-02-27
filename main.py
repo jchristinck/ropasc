@@ -20,6 +20,7 @@ if __name__ == "__main__":
     min_frame_time = float(config.get('rules', 'min_frame_time'))
     screen = pygame.display.set_mode(WINDOW)
     figure = pyc.Figure(screen, 910, 250, 880, 400)
+    figure.set_ylim((0, 100))
     pygame.display.set_caption("Rock Paper Scissors Simulator")
     font = pygame.freetype.Font("fonts/Arial.ttf", 36)
     game = Game(config, FIELD)
